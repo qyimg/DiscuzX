@@ -32,11 +32,18 @@ function build_cache_styles() {
 			}
 		}
 		$data = array_merge($data, $datanew);
-		if(strstr($data['boardimg'], ',')) {
-			$flash = explode(",", $data['boardimg']);
-			$flash[0] = trim($flash[0]);
-			$flash[0] = preg_match('/^(https?:)?\/\//i', $flash[0]) ? $flash[0] : $data['styleimgdir'].'/'.$flash[0];
-			$data['boardlogo'] = "<embed src=\"".$flash[0]."\" width=\"".trim($flash[1])."\" height=\"".trim($flash[2])."\" type=\"application/x-shockwave-flash\" wmode=\"transparent\"></embed>";
+        if(strstr($data['boardimg'], '@')) {
+			$_v = explode("@", $data['boardimg']);
+			switch ($_v[1]) {
+				case 'text':
+					$data['boardlogo'] = '<span class="">'.$_v[0].'</span>';
+					break;
+
+				default:
+					$data['boardimg'] = preg_match('/^(https?:)?\/\//i', $_v[0]) ? $_v[0] : $data['styleimgdir'].'/'.$_v[0];
+					$data['boardlogo'] = "<img src=\"$data[boardimg]\" alt=\"".$_G['setting']['bbname']."\" border=\"0\" />";
+					break;
+			}
 		} else {
 			$data['boardimg'] = preg_match('/^(https?:)?\/\//i', $data['boardimg']) ? $data['boardimg'] : $data['styleimgdir'].'/'.$data['boardimg'];
 			$data['boardlogo'] = "<img src=\"$data[boardimg]\" alt=\"".$_G['setting']['bbname']."\" border=\"0\" />";
